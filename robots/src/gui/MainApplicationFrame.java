@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.*;
 
+import NatSelection.NSWindow;
 import log.Logger;
 
 
@@ -41,9 +42,15 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow(localization);
+//        GameWindow gameWindow = new GameWindow(localization);
+//        gameWindow.setSize(400,  400);
+//        addWindow(gameWindow);
+
+        NSWindow gameWindow = new NSWindow(localization);
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
+
+
 
         setJMenuBar(new MenuBar(this, localization, config));
 
