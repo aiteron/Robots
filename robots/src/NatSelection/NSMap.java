@@ -37,6 +37,8 @@ public class NSMap extends JPanel
 
     public NSMap()
     {
+        monster = new Monster(this);
+
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -54,8 +56,6 @@ public class NSMap extends JPanel
             }
         }, 0, 10);
         setDoubleBuffered(true);
-
-        monster = new Monster();
     }
 
 
@@ -77,7 +77,7 @@ public class NSMap extends JPanel
     protected void onModelUpdateEvent()
     {
         if(foodCoords.size() == 0 && this.getWidth() != 0)
-            createFood(10);
+            createFood(30);
 
         monster.update(10);
     }
@@ -132,4 +132,33 @@ public class NSMap extends JPanel
         drawOval(g, x, y, 10, 10);
     }
 
+    private static double distance(double x1, double y1, double x2, double y2)
+    {
+        double diffX = x1 - x2;
+        double diffY = y1 - y2;
+        return Math.sqrt(diffX * diffX + diffY * diffY);
+    }
+
+    public Pair<Integer, Integer> getTarget(int x, int y) {
+        for(int i = 0; i < foodCoords.size(); i++)
+        {
+            if(distance(x, y, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond()) < monster.getVisionDistance())
+            {
+                Pair<Integer, Integer> coord = new Pair<>(foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
+                return coord;
+            }
+        }
+        return null;
+    }
+
+    public void removeFood(double x, double y) {
+        for(int i = 0; i < foodCoords.size(); i++)
+        {
+            if(foodCoords.get(i).getFirst() == x && foodCoords.get(i).getSecond() == y)
+            {
+                foodCoords.remove(i);
+                return;
+            }
+        }
+    }
 }
