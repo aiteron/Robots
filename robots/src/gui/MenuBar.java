@@ -115,8 +115,6 @@ public class MenuBar extends JMenuBar {
     {
         JMenu langMenu = createMenuCategory(localization.getString("menuBarLang"), KeyEvent.VK_L, localization.getString("menuBarLang"));
 
-
-        // Close window with confirm window
         JMenuItem rusLangItem = createMenuItem(localization.getString("menuItemLangRus"), KeyEvent.VK_R, (event) -> {
             try {
                 config.setProperty("lang", "ru");
