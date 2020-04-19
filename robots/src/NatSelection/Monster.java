@@ -4,14 +4,13 @@ public class Monster {
 
     private final double SPEED = 0.1;
     private final double ROTATESPEED = 0.01;
-    private final int LIFETIME = 5000;
-    private double x, y, direction, targetDirection;
+
+
+    private double x, y, direction, targetDirection, visionDistance = 60;
     private Pair<Integer, Integer> targetCoords;
     private NSMap map;
     private int foodEaten = 0;
-    private double liveTimer = LIFETIME;
-    private boolean isAlive = true, isGoHome = false;
-    private boolean canMove = true;
+    private boolean isAlive = true, isAtHome = true, isGoingHome = false;
 
     public Monster(NSMap nsMap, int x, int y)
     {
@@ -33,26 +32,15 @@ public class Monster {
 
     public void update(double dt)
     {
-        /*
-        Чекает еду в зоне видимости
-        Если есть - идет к ней
-        Если нет - идет рандомно. (Точнее в +- том направлении что двигался. И если врезался - то в обратном)
-         */
-
-        // TODO Refactoring
         double newX, newY;
 
-        liveTimer -= dt;
-
-        if(liveTimer < 0 && foodEaten == 0)
-            isAlive = false;
-
-        if(!canMove)
+        if(isAtHome)
             return;
 
-        if(targetCoords == null)
+
+        if(foodEaten < 2 && !isGoingHome)
         {
-            targetCoords = map.getTarget((int)x, (int)y);
+            targetCoords = map.getTarget((int)x, (int)y, visionDistance);
         }
 
 
@@ -61,24 +49,12 @@ public class Monster {
         {
             targetDirection = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
 
-            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt || distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < 10)
-            {
+            if(distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < 10)
                 direction = targetDirection;
-            }
             else
-            {
-                if(targetDirection - direction > Math.PI)
-                    direction = Math.PI*2 + direction;
-                else if(targetDirection - direction < -Math.PI)
-                    targetDirection = Math.PI*2 + targetDirection;
+                rotateToTargetDirection(dt);
 
-
-                if(targetDirection - direction > 0)
-                    direction = (direction + ROTATESPEED*dt)%(Math.PI*2);
-                else
-                    direction = (direction - ROTATESPEED*dt)%(Math.PI*2);
-            }
-
+            // TODO может вынести то что выше в нижнюю часть?
 
 
             if(distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < SPEED*dt)
@@ -89,22 +65,23 @@ public class Monster {
                 targetCoords = null;
                 targetDirection = -1;
 
-                if(isGoHome)
+                if(isGoingHome)
                 {
-                    canMove = false;
+                    isGoingHome = false;
+                    isAtHome = true;
+
+                    if(foodEaten == 0)
+                        isAlive = false;
+                    else if(foodEaten == 2)
+                        multiply();
+
                     return;
                 }
+                if(map.removeFood(x, y))
+                    foodEaten++;
 
-                map.removeFood(x, y);
-                foodEaten++;
-
-                if(foodEaten == 1)
-                    liveTimer = LIFETIME;
-                else if(foodEaten == 2)
-                {
-                    multiply();
+                if(foodEaten == 2)
                     goHome();
-                }
             }
             else
             {
@@ -125,18 +102,7 @@ public class Monster {
             if(targetDirection == -1)
                 targetDirection = (direction + (Math.random()*Math.PI - Math.PI/2))%(Math.PI*2);
 
-            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt)
-            {
-                direction = targetDirection;
-                targetDirection = -1;
-            }
-            else
-            {
-                if(targetDirection - direction > 0)
-                    direction = (direction + ROTATESPEED*dt)%(Math.PI*2);
-                else
-                    direction = (direction - ROTATESPEED*dt)%(Math.PI*2);
-            }
+            rotateToTargetDirection(dt);
 
             newX = x + SPEED * Math.cos(direction) * dt;
             newY = y + SPEED * Math.sin(direction) * dt;
@@ -154,6 +120,28 @@ public class Monster {
 
     }
 
+    private void rotateToTargetDirection(double dt)
+    {
+        if(Math.abs(direction - targetDirection) < ROTATESPEED*dt)
+        {
+            direction = targetDirection;
+            targetDirection = -1;
+        }
+        else
+        {
+            if(targetDirection - direction > Math.PI)
+                direction = Math.PI*2 + direction;
+            else if(targetDirection - direction < -Math.PI)
+                targetDirection = Math.PI*2 + targetDirection;
+
+
+            if(targetDirection - direction > 0)
+                direction = (direction + ROTATESPEED*dt)%(Math.PI*2);
+            else
+                direction = (direction - ROTATESPEED*dt)%(Math.PI*2);
+        }
+    }
+
     private void multiply() {
         map.createMonster((int)x, (int)y);
     }
@@ -163,8 +151,8 @@ public class Monster {
         return new Pair<Integer, Integer>((int)(x), (int)(y));
     }
 
-    public static double getVisionDistance() {
-        return 60;
+    public double getVisionDistance() {
+        return visionDistance;
     }
 
     public double getDirection() {
@@ -178,7 +166,7 @@ public class Monster {
 
     public void goHome()
     {
-        isGoHome = true;
+        isGoingHome = true;
 
         double nX = 0, nY = 0, w = map.getWidth(), h = map.getHeight();
         double left = x, right = w-x, up = y, down = h-y;
@@ -200,5 +188,14 @@ public class Monster {
         }
 
         targetCoords = new Pair<>((int)nX, (int)nY);
+    }
+
+    public boolean isAtHome() {
+        return isAtHome;
+    }
+
+    public void activate() {
+        isAtHome = false;
+        foodEaten = 0;
     }
 }

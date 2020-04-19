@@ -15,15 +15,17 @@ import javax.swing.JPanel;
 
 public class NSMap extends JPanel
 {
+    private final int ITER_DURATION = 5000;
+
     private final Timer m_timer = initTimer();
     private final ArrayList<Pair<Integer, Integer>> foodCoords = new ArrayList<>();
     private final ArrayList<Monster> monsters = new ArrayList<>();
 
+    private int foodCount = 0, mobCount = 0, iterationCount = 0;
 
 
-
-    private double foodCreateDelay = 1000, iterationDuration = 10000;
-    private boolean isInit = false, isEndOfIteration = false, isActive = false;
+    private int iterationTimer, iterationCounter;
+    private boolean isActive = false, isEndOfIteration = false, allMonstersAtHome = true;
 
     private static Timer initTimer()
     {
@@ -55,62 +57,95 @@ public class NSMap extends JPanel
         setDoubleBuffered(true);
     }
 
-    public void createMonster(int x, int y) {
-        monsters.add(new Monster(this, x, y));
+    private void createMonsters(int num)
+    {
+        for(int i = 0; i < num; i++)
+        {
+            if(Math.random() < 0.5)
+                createMonster((int)(Math.random()*this.getWidth()), 0);
+            else
+                createMonster((int)(Math.random()*this.getWidth()), this.getHeight());
+        }
     }
 
-
-    // MODEL
-
-    Pair<Integer, Integer> getRandomCoords(int firstStart, int firstEnd, int secondStart, int secondEnd)
-    {
-        return new Pair<Integer, Integer>((int) (firstStart + Math.random()*(firstEnd - firstStart)), (int) (secondStart + Math.random()*(secondEnd - secondStart)));
+    public void createMonster(int x, int y) {
+        monsters.add(new Monster(this, x, y));
     }
 
     private void createFood(int num) {
         for (int i = 0; i < num; i++)
         {
-            foodCoords.add(getRandomCoords(0, this.getWidth(), 0, this.getHeight()));
+            foodCoords.add(new Pair<Integer, Integer>((int) (Math.random()*(this.getWidth())), (int) (Math.random()*(this.getHeight()))));
         }
     }
 
     protected void onModelUpdateEvent()
     {
-        if(!isInit && this.getWidth() != 0)
+        if(!isActive)
+            return;
+
+        if(allMonstersAtHome)
         {
-            isInit = true;
-            createFood(20);
-        }
-
-        foodCreateDelay -= 10;
-        if(foodCreateDelay < 0)
-        {
-            createFood(4);
-            foodCreateDelay = 1000;
-        }
-
-
-        for (int i = 0; i < monsters.size(); i++) {
-            monsters.get(i).update(10);
-        }
-
-        Iterator<Monster> i = monsters.iterator();
-        while (i.hasNext()) {
-            Monster s = i.next(); // must be called before you can call i.remove()
-            if(!s.isAlive())
-                i.remove();
-        }
-
-        if(!isEndOfIteration)
-        {
-            iterationDuration -= 10;
-            if(iterationDuration < 0)
+            for(int i = 0; i < monsters.size(); i++)
             {
-                for (int j = 0; j < monsters.size(); j++) {
-                    monsters.get(j).goHome();
+                monsters.get(i).activate();
+            }
+            allMonstersAtHome = false;
+        }
+
+
+        iterationTimer -= 10;
+        if(iterationTimer < 0)
+        {
+            if(!isEndOfIteration)
+            {
+                for(int i = 0; i < monsters.size(); i++)
+                {
+                    if(!monsters.get(i).isAtHome())
+                        monsters.get(i).goHome();
                 }
                 isEndOfIteration = true;
             }
+            else
+            {
+                allMonstersAtHome = true;
+
+                for(int i = 0; i < monsters.size(); i++)
+                {
+                    if(!monsters.get(i).isAtHome())
+                    {
+                        allMonstersAtHome = false;
+                        break;
+                    }
+                }
+
+                if(allMonstersAtHome)
+                {
+                    Iterator<Monster> i = monsters.iterator();
+                    while (i.hasNext()) {
+                        Monster s = i.next();
+                        if(!s.isAlive())
+                            i.remove();
+                    }
+
+                    foodCoords.clear();
+                    createFood(foodCount);
+
+                    iterationCounter++;
+                    iterationTimer = ITER_DURATION;
+                    isEndOfIteration = false;
+
+                    if(iterationCounter == iterationCount)
+                    {
+                        isActive = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < monsters.size(); i++) {
+            monsters.get(i).update(10);
         }
     }
 
@@ -121,32 +156,39 @@ public class NSMap extends JPanel
         return Math.sqrt(diffX * diffX + diffY * diffY);
     }
 
-    public Pair<Integer, Integer> getTarget(int x, int y) {
+    public Pair<Integer, Integer> getTarget(int x, int y, double distance) {
+        double minDist = distance, dist;
+        int foodNum = -1;
+
         for(int i = 0; i < foodCoords.size(); i++)
         {
-            if(distance(x, y, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond()) < Monster.getVisionDistance())
+            dist = distance(x, y, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
+
+            if(dist < minDist)
             {
-                Pair<Integer, Integer> coord = new Pair<>(foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
-                return coord;
+                minDist = dist;
+                foodNum = i;
             }
         }
-        return null;
+
+        if(foodNum != -1)
+            return new Pair<>(foodCoords.get(foodNum).getFirst(), foodCoords.get(foodNum).getSecond());
+        else
+            return null;
     }
 
-    public void removeFood(double x, double y) {
+    public boolean removeFood(double x, double y) {
         for(int i = 0; i < foodCoords.size(); i++)
         {
             if(foodCoords.get(i).getFirst() == x && foodCoords.get(i).getSecond() == y)
             {
                 foodCoords.remove(i);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
-
-
-    // VIEW
 
     protected void onRedrawEvent()
     {
@@ -202,19 +244,29 @@ public class NSMap extends JPanel
 
 
     public void setCountFood(int i) {
-        System.out.println(i);
+        foodCount = i;
     }
 
     public void setCountMobs(int i) {
-        System.out.println(i);
+        mobCount = i;
     }
 
     public void setCountIterations(int i) {
-        System.out.println(i);
+        iterationCount = i;
     }
 
     public void startSimulation() {
+        foodCoords.clear();
+        monsters.clear();
 
+        createFood(foodCount);
+        createMonsters(mobCount);
+
+        iterationCounter = 0;
+        isActive = true;
+        isEndOfIteration = false;
+        allMonstersAtHome = true;
+        iterationTimer = ITER_DURATION;
 
 
     }
