@@ -9,10 +9,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import javax.swing.JPanel;
 
@@ -28,6 +25,8 @@ public class NSMap extends JPanel
     private final Timer m_timer = initTimer();
     private final ArrayList<Pair<Integer, Integer>> foodCoords = new ArrayList<>();
     private final ArrayList<Monster> monsters = new ArrayList<>();
+    private double foodCreateDelay = 1000;
+    private boolean isInit = false;
 
     private static Timer initTimer()
     {
@@ -80,12 +79,29 @@ public class NSMap extends JPanel
 
     protected void onModelUpdateEvent()
     {
-        if(foodCoords.size() == 0 && this.getWidth() != 0)
-            createFood(20);
-
-        for(int i = 0; i < monsters.size(); i++)
+        if(!isInit && this.getWidth() != 0)
         {
+            isInit = true;
+            createFood(20);
+        }
+
+        foodCreateDelay -= 10;
+        if(foodCreateDelay < 0)
+        {
+            createFood(4);
+            foodCreateDelay = 1000;
+        }
+
+
+        for (int i = 0; i < monsters.size(); i++) {
             monsters.get(i).update(10);
+        }
+
+        Iterator<Monster> i = monsters.iterator();
+        while (i.hasNext()) {
+            Monster s = i.next(); // must be called before you can call i.remove()
+            if(!s.isAlive())
+                i.remove();
         }
 
         System.out.println(monsters.size());

@@ -4,10 +4,13 @@ public class Monster {
 
     private final double SPEED = 0.1;
     private final double ROTATESPEED = 0.01;
+    private final int LIFETIME = 5000;
     private double x, y, direction, targetDirection;
     private Pair<Integer, Integer> targetCoords;
     private NSMap map;
     private int foodEaten = 0;
+    private double liveTimer = LIFETIME;
+    private boolean isAlive = true;
 
     public Monster(NSMap nsMap, int x, int y)
     {
@@ -38,6 +41,11 @@ public class Monster {
         // TODO Refactoring
         double newX, newY;
 
+        liveTimer -= dt;
+
+
+        if(liveTimer < 0)
+            isAlive = false;
 
         if(targetCoords == null)
         {
@@ -78,7 +86,9 @@ public class Monster {
                 map.removeFood(x, y);
                 foodEaten++;
 
-                if(foodEaten == 2)
+                if(foodEaten == 1)
+                    liveTimer = LIFETIME;
+                else if(foodEaten == 2)
                 {
                     foodEaten = 0;
                     multiply();
@@ -150,5 +160,10 @@ public class Monster {
 
     public double getDirection() {
         return direction;
+    }
+
+    public boolean isAlive()
+    {
+        return isAlive;
     }
 }
