@@ -77,59 +77,9 @@ public class NSMap extends JPanel
     protected void onModelUpdateEvent()
     {
         if(foodCoords.size() == 0 && this.getWidth() != 0)
-            createFood(30);
+            createFood(0);
 
         monster.update(10);
-    }
-
-
-
-
-    // VIEW
-
-    protected void onRedrawEvent()
-    {
-        EventQueue.invokeLater(this::repaint);
-    }
-
-    @Override
-    public void paint(Graphics g)
-    {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D)g;
-        for(int i = 0; i < foodCoords.size(); i++)
-            drawTarget(g2d, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
-        drawMonster(g2d, monster.getCoords().getFirst(), monster.getCoords().getSecond());
-    }
-
-    private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
-    {
-        g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-    }
-
-    private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
-    {
-        g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-    }
-
-    private void drawTarget(Graphics2D g, int x, int y)
-    {
-        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
-        g.setTransform(t);
-        g.setColor(Color.GREEN);
-        fillOval(g, x, y, 5, 5);
-        g.setColor(Color.BLACK);
-        drawOval(g, x, y, 5, 5);
-    }
-
-    private void drawMonster(Graphics2D g, int x, int y)
-    {
-        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
-        g.setTransform(t);
-        g.setColor(Color.BLUE);
-        fillOval(g, x, y, 10, 10);
-        g.setColor(Color.BLACK);
-        drawOval(g, x, y, 10, 10);
     }
 
     private static double distance(double x1, double y1, double x2, double y2)
@@ -160,5 +110,57 @@ public class NSMap extends JPanel
                 return;
             }
         }
+    }
+
+
+
+    // VIEW
+
+    protected void onRedrawEvent()
+    {
+        EventQueue.invokeLater(this::repaint);
+    }
+
+    @Override
+    public void paint(Graphics g)
+    {
+        super.paint(g);
+        Graphics2D g2d = (Graphics2D)g;
+        for(int i = 0; i < foodCoords.size(); i++)
+            drawTarget(g2d, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
+        drawMonster(g2d, monster.getCoords().getFirst(), monster.getCoords().getSecond(), monster.getDirection());
+    }
+
+    private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
+    {
+        g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
+    }
+
+    private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
+    {
+        g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
+    }
+
+    private void drawTarget(Graphics2D g, int x, int y)
+    {
+        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
+        g.setTransform(t);
+        g.setColor(Color.GREEN);
+        fillOval(g, x, y, 5, 5);
+        g.setColor(Color.BLACK);
+        drawOval(g, x, y, 5, 5);
+    }
+
+    private void drawMonster(Graphics2D g, int x, int y, double direction)
+    {
+        AffineTransform t = AffineTransform.getRotateInstance(direction, x, y);
+        g.setTransform(t);
+        g.setColor(Color.BLUE);
+        fillOval(g, x, y, 20, 10);
+        g.setColor(Color.BLACK);
+        drawOval(g, x, y, 20, 10);
+
+        g.setColor(Color.RED);
+        fillOval(g, x + 5, y, 5, 5);
     }
 }

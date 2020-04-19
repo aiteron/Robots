@@ -3,19 +3,20 @@ package NatSelection;
 public class Monster {
 
     private final double SPEED = 0.1;
-    private double x, y, direction;
+    private final double ROTATESPEED = 0.01;
+    private double x, y, direction, targetDirection;
     private Pair<Integer, Integer> targetCoords;
     private NSMap map;
 
     public Monster(NSMap nsMap)
     {
-        x = 100;
-        y = 100;
+        x = 200;
+        y = 200;
         direction = Math.random()*Math.PI*2;
+        targetDirection = -1;
         map = nsMap;
 
-        //targetCoords = null;
-        targetCoords = new Pair<>(200, 200);
+        targetCoords = null;
     }
 
     private static double distance(double x1, double y1, double x2, double y2)
@@ -32,22 +33,33 @@ public class Monster {
         Если есть - идет к ней
         Если нет - идет рандомно. (Точнее в +- том направлении что двигался. И если врезался - то в обратном)
          */
-
         double newX, newY;
+
 
         if(targetCoords == null)
         {
             targetCoords = map.getTarget((int)x, (int)y);
             if(targetCoords != null)
-                System.out.println("yep");
+                targetDirection = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
         }
+
 
 
         if(targetCoords != null)
         {
-            System.out.println(targetCoords.getFirst() + " " + targetCoords.getSecond());
+            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt)
+            {
+                direction = targetDirection;
+            }
+            else
+            {
+                if(targetDirection - direction > 0)
+                    direction += ROTATESPEED*dt;
+                else
+                    direction -= ROTATESPEED*dt;
+            }
 
-            direction = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
+
 
             if(distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < SPEED*dt)
             {
@@ -57,6 +69,7 @@ public class Monster {
                 map.removeFood(x, y);
 
                 targetCoords = null;
+                targetDirection = -1;
             }
             else
             {
@@ -70,19 +83,33 @@ public class Monster {
                     x = newX;
                     y = newY;
                 }
-
             }
         }
         else
         {
-            direction += (Math.random()*Math.PI/2) - Math.PI/4;
+            if(targetDirection == -1)
+                targetDirection = direction + (Math.random()*Math.PI - Math.PI/2);
 
+            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt)
+            {
+                direction = targetDirection;
+                targetDirection = -1;
+            }
+            else
+            {
+                if(targetDirection - direction > 0)
+                    direction += ROTATESPEED*dt;
+                else
+                    direction -= ROTATESPEED*dt;
+            }
 
             newX = x + SPEED * Math.cos(direction) * dt;
             newY = y + SPEED * Math.sin(direction) * dt;
 
-            if(newX < 0 || newX > map.getWidth() || newY < 0 || newY > map.getHeight())
+            if(newX < 0 || newX > map.getWidth() || newY < 0 || newY > map.getHeight()) {
                 direction += Math.PI;
+                targetDirection = direction;
+            }
             else
             {
                 x = newX;
@@ -99,5 +126,9 @@ public class Monster {
 
     public double getVisionDistance() {
         return 60;
+    }
+
+    public double getDirection() {
+        return direction;
     }
 }

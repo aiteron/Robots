@@ -28,6 +28,8 @@ public class NSWindow extends JInternalFrame
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
+        //TODO добавить удаление map при закрытие окна.
+
         // Confirm close window
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
