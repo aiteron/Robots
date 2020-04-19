@@ -13,20 +13,17 @@ import java.util.*;
 
 import javax.swing.JPanel;
 
-
-/*
-Содержит поле
-
-На поле есть еда.
- */
-
 public class NSMap extends JPanel
 {
     private final Timer m_timer = initTimer();
     private final ArrayList<Pair<Integer, Integer>> foodCoords = new ArrayList<>();
     private final ArrayList<Monster> monsters = new ArrayList<>();
+
+
+
+
     private double foodCreateDelay = 1000, iterationDuration = 10000;
-    private boolean isInit = false, isEndOfIteration = false;
+    private boolean isInit = false, isEndOfIteration = false, isActive = false;
 
     private static Timer initTimer()
     {
@@ -217,6 +214,8 @@ public class NSMap extends JPanel
     }
 
     public void startSimulation() {
-        System.out.println("start");
+
+
+
     }
 }

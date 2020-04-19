@@ -36,12 +36,22 @@ public class ControlWindow extends JInternalFrame
 
         JButton startButton = new JButton(localization.getString("StartButtonLabel"));
 
+
+
         startButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                gameWindow.setCountFood(Integer.parseInt(foodCountTF.getText()));
-                gameWindow.setCountMobs(Integer.parseInt(mobsCountTF.getText()));
-                gameWindow.setCountIterations(Integer.parseInt(iterationsCountTF.getText()));
-                gameWindow.startSimulation();
+                if(foodCountTF.getText().equals("") || mobsCountTF.getText().equals("") || iterationsCountTF.getText().equals(""))
+                {
+                    JOptionPane.showMessageDialog((Component) e.getSource(),
+                            localization.getString("ErrorMessage_EmptyTextField"));
+                }
+                else
+                {
+                    gameWindow.setCountFood( Integer.parseInt(foodCountTF.getText()));
+                    gameWindow.setCountMobs(Integer.parseInt(mobsCountTF.getText()));
+                    gameWindow.setCountIterations(Integer.parseInt(iterationsCountTF.getText()));
+                    gameWindow.startSimulation();
+                }
             }
         });
 

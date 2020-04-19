@@ -43,9 +43,6 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-//        GameWindow gameWindow = new GameWindow(localization);
-//        gameWindow.setSize(400,  400);
-//        addWindow(gameWindow);
 
         NSWindow gameWindow = new NSWindow(localization);
         gameWindow.setSize(400,  400);
