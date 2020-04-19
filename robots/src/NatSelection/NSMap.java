@@ -202,4 +202,21 @@ public class NSMap extends JPanel
         g.setColor(Color.RED);
         fillOval(g, x + 5, y, 5, 5);
     }
+
+
+    public void setCountFood(int i) {
+        System.out.println(i);
+    }
+
+    public void setCountMobs(int i) {
+        System.out.println(i);
+    }
+
+    public void setCountIterations(int i) {
+        System.out.println(i);
+    }
+
+    public void startSimulation() {
+        System.out.println("start");
+    }
 }

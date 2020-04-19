@@ -20,6 +20,8 @@ public class NSWindow extends JInternalFrame
         this.localization = localization;
 
 
+
+
         m_visualizer = new NSMap();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
@@ -46,6 +48,22 @@ public class NSWindow extends JInternalFrame
         });
 
         pack();
+    }
+
+    public void setCountFood(int i) {
+        m_visualizer.setCountFood(i);
+    }
+
+    public void setCountMobs(int i) {
+        m_visualizer.setCountMobs(i);
+    }
+
+    public void setCountIterations(int i) {
+        m_visualizer.setCountIterations(i);
+    }
+
+    public void startSimulation() {
+        m_visualizer.startSimulation();
     }
 }
 

@@ -64,7 +64,6 @@ public class Monster {
             if(Math.abs(direction - targetDirection) < ROTATESPEED*dt || distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < 10)
             {
                 direction = targetDirection;
-                System.out.println("yep");
             }
             else
             {

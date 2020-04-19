@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.*;
 
+import NatSelection.ControlWindow;
 import NatSelection.NSWindow;
 import log.Logger;
 
@@ -50,6 +51,10 @@ public class MainApplicationFrame extends JFrame
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
+        ControlWindow controlWindow = new ControlWindow(localization, gameWindow);
+        controlWindow.setSize(400, 200);
+        controlWindow.setLocation(400, 0);
+        addWindow(controlWindow);
 
 
         setJMenuBar(new MenuBar(this, localization, config));
