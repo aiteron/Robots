@@ -115,9 +115,6 @@ public class NSMap extends JPanel
                 isEndOfIteration = true;
             }
         }
-
-
-        System.out.println(monsters.size());
     }
 
     private static double distance(double x1, double y1, double x2, double y2)

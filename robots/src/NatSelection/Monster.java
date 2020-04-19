@@ -39,16 +39,16 @@ public class Monster {
         Если нет - идет рандомно. (Точнее в +- том направлении что двигался. И если врезался - то в обратном)
          */
 
-        if(!canMove)
-            return;
-
         // TODO Refactoring
         double newX, newY;
 
         liveTimer -= dt;
 
-        if(liveTimer < 0)
+        if(liveTimer < 0 && foodEaten == 0)
             isAlive = false;
+
+        if(!canMove)
+            return;
 
         if(targetCoords == null)
         {
@@ -61,9 +61,10 @@ public class Monster {
         {
             targetDirection = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
 
-            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt || isGoHome)
+            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt || distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < 10)
             {
                 direction = targetDirection;
+                System.out.println("yep");
             }
             else
             {
@@ -102,8 +103,8 @@ public class Monster {
                     liveTimer = LIFETIME;
                 else if(foodEaten == 2)
                 {
-                    foodEaten = 0;
                     multiply();
+                    goHome();
                 }
             }
             else
