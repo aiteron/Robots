@@ -27,7 +27,7 @@ public class NSMap extends JPanel
 {
     private final Timer m_timer = initTimer();
     private final ArrayList<Pair<Integer, Integer>> foodCoords = new ArrayList<>();
-    private Monster monster;
+    private final ArrayList<Monster> monsters = new ArrayList<>();
 
     private static Timer initTimer()
     {
@@ -37,7 +37,8 @@ public class NSMap extends JPanel
 
     public NSMap()
     {
-        monster = new Monster(this);
+        for(int i = 0; i < 10; i++)
+            createMonster((int) (Math.random()*350), (int)(Math.random()*350));
 
         m_timer.schedule(new TimerTask()
         {
@@ -58,6 +59,9 @@ public class NSMap extends JPanel
         setDoubleBuffered(true);
     }
 
+    public void createMonster(int x, int y) {
+        monsters.add(new Monster(this, x, y));
+    }
 
 
     // MODEL
@@ -79,7 +83,12 @@ public class NSMap extends JPanel
         if(foodCoords.size() == 0 && this.getWidth() != 0)
             createFood(20);
 
-        monster.update(10);
+        for(int i = 0; i < monsters.size(); i++)
+        {
+            monsters.get(i).update(10);
+        }
+
+        System.out.println(monsters.size());
     }
 
     private static double distance(double x1, double y1, double x2, double y2)
@@ -92,7 +101,7 @@ public class NSMap extends JPanel
     public Pair<Integer, Integer> getTarget(int x, int y) {
         for(int i = 0; i < foodCoords.size(); i++)
         {
-            if(distance(x, y, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond()) < monster.getVisionDistance())
+            if(distance(x, y, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond()) < Monster.getVisionDistance())
             {
                 Pair<Integer, Integer> coord = new Pair<>(foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
                 return coord;
@@ -128,7 +137,11 @@ public class NSMap extends JPanel
         Graphics2D g2d = (Graphics2D)g;
         for(int i = 0; i < foodCoords.size(); i++)
             drawTarget(g2d, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
-        drawMonster(g2d, monster.getCoords().getFirst(), monster.getCoords().getSecond(), monster.getDirection());
+
+        for(int i = 0; i < monsters.size(); i++)
+            drawMonster(g2d, monsters.get(i).getCoords().getFirst(), monsters.get(i).getCoords().getSecond(), monsters.get(i).getDirection());
+
+
     }
 
     private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)

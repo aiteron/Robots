@@ -7,11 +7,12 @@ public class Monster {
     private double x, y, direction, targetDirection;
     private Pair<Integer, Integer> targetCoords;
     private NSMap map;
+    private int foodEaten = 0;
 
-    public Monster(NSMap nsMap)
+    public Monster(NSMap nsMap, int x, int y)
     {
-        x = 200;
-        y = 200;
+        this.x = x;
+        this.y = y;
         direction = Math.random()*Math.PI*2;
         targetDirection = -1;
         map = nsMap;
@@ -33,6 +34,8 @@ public class Monster {
         Если есть - идет к ней
         Если нет - идет рандомно. (Точнее в +- том направлении что двигался. И если врезался - то в обратном)
          */
+
+        // TODO Refactoring
         double newX, newY;
 
 
@@ -73,6 +76,13 @@ public class Monster {
                 y = targetCoords.getSecond();
 
                 map.removeFood(x, y);
+                foodEaten++;
+
+                if(foodEaten == 2)
+                {
+                    foodEaten = 0;
+                    multiply();
+                }
 
                 targetCoords = null;
                 targetDirection = -1;
@@ -125,12 +135,16 @@ public class Monster {
 
     }
 
+    private void multiply() {
+        map.createMonster((int)x, (int)y);
+    }
+
     public Pair<Integer, Integer> getCoords()
     {
         return new Pair<Integer, Integer>((int)(x), (int)(y));
     }
 
-    public double getVisionDistance() {
+    public static double getVisionDistance() {
         return 60;
     }
 
