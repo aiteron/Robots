@@ -10,7 +10,8 @@ public class Monster {
     private NSMap map;
     private int foodEaten = 0;
     private double liveTimer = LIFETIME;
-    private boolean isAlive = true;
+    private boolean isAlive = true, isGoHome = false;
+    private boolean canMove = true;
 
     public Monster(NSMap nsMap, int x, int y)
     {
@@ -38,11 +39,13 @@ public class Monster {
         Если нет - идет рандомно. (Точнее в +- том направлении что двигался. И если врезался - то в обратном)
          */
 
+        if(!canMove)
+            return;
+
         // TODO Refactoring
         double newX, newY;
 
         liveTimer -= dt;
-
 
         if(liveTimer < 0)
             isAlive = false;
@@ -58,7 +61,7 @@ public class Monster {
         {
             targetDirection = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
 
-            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt)
+            if(Math.abs(direction - targetDirection) < ROTATESPEED*dt || isGoHome)
             {
                 direction = targetDirection;
             }
@@ -83,6 +86,15 @@ public class Monster {
                 x = targetCoords.getFirst();
                 y = targetCoords.getSecond();
 
+                targetCoords = null;
+                targetDirection = -1;
+
+                if(isGoHome)
+                {
+                    canMove = false;
+                    return;
+                }
+
                 map.removeFood(x, y);
                 foodEaten++;
 
@@ -93,9 +105,6 @@ public class Monster {
                     foodEaten = 0;
                     multiply();
                 }
-
-                targetCoords = null;
-                targetDirection = -1;
             }
             else
             {
@@ -165,5 +174,31 @@ public class Monster {
     public boolean isAlive()
     {
         return isAlive;
+    }
+
+    public void goHome()
+    {
+        isGoHome = true;
+
+        double nX = 0, nY = 0, w = map.getWidth(), h = map.getHeight();
+        double left = x, right = w-x, up = y, down = h-y;
+        double min = Math.min(Math.min(left, right), Math.min(up, down));
+
+        if(left == min)
+            nY = y;
+        else if(up == min)
+            nX = x;
+        else if(right == min)
+        {
+            nY = y;
+            nX = w;
+        }
+        else
+        {
+            nX = x;
+            nY = h;
+        }
+
+        targetCoords = new Pair<>((int)nX, (int)nY);
     }
 }

@@ -25,8 +25,8 @@ public class NSMap extends JPanel
     private final Timer m_timer = initTimer();
     private final ArrayList<Pair<Integer, Integer>> foodCoords = new ArrayList<>();
     private final ArrayList<Monster> monsters = new ArrayList<>();
-    private double foodCreateDelay = 1000;
-    private boolean isInit = false;
+    private double foodCreateDelay = 1000, iterationDuration = 10000;
+    private boolean isInit = false, isEndOfIteration = false;
 
     private static Timer initTimer()
     {
@@ -103,6 +103,19 @@ public class NSMap extends JPanel
             if(!s.isAlive())
                 i.remove();
         }
+
+        if(!isEndOfIteration)
+        {
+            iterationDuration -= 10;
+            if(iterationDuration < 0)
+            {
+                for (int j = 0; j < monsters.size(); j++) {
+                    monsters.get(j).goHome();
+                }
+                isEndOfIteration = true;
+            }
+        }
+
 
         System.out.println(monsters.size());
     }
