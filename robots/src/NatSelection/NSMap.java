@@ -77,7 +77,7 @@ public class NSMap extends JPanel
     protected void onModelUpdateEvent()
     {
         if(foodCoords.size() == 0 && this.getWidth() != 0)
-            createFood(0);
+            createFood(20);
 
         monster.update(10);
     }

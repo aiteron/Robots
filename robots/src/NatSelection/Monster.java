@@ -39,24 +39,30 @@ public class Monster {
         if(targetCoords == null)
         {
             targetCoords = map.getTarget((int)x, (int)y);
-            if(targetCoords != null)
-                targetDirection = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
         }
 
 
 
         if(targetCoords != null)
         {
+            targetDirection = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
+
             if(Math.abs(direction - targetDirection) < ROTATESPEED*dt)
             {
                 direction = targetDirection;
             }
             else
             {
+                if(targetDirection - direction > Math.PI)
+                    direction = Math.PI*2 + direction;
+                else if(targetDirection - direction < -Math.PI)
+                    targetDirection = Math.PI*2 + targetDirection;
+
+
                 if(targetDirection - direction > 0)
-                    direction += ROTATESPEED*dt;
+                    direction = (direction + ROTATESPEED*dt)%(Math.PI*2);
                 else
-                    direction -= ROTATESPEED*dt;
+                    direction = (direction - ROTATESPEED*dt)%(Math.PI*2);
             }
 
 
@@ -77,7 +83,7 @@ public class Monster {
                 newY = y + SPEED * Math.sin(direction) * dt;
 
                 if(newX < 0 || newX > map.getWidth() || newY < 0 || newY > map.getHeight())
-                    direction += Math.PI;
+                    direction = (direction + Math.PI)%(Math.PI*2);
                 else
                 {
                     x = newX;
@@ -88,7 +94,7 @@ public class Monster {
         else
         {
             if(targetDirection == -1)
-                targetDirection = direction + (Math.random()*Math.PI - Math.PI/2);
+                targetDirection = (direction + (Math.random()*Math.PI - Math.PI/2))%(Math.PI*2);
 
             if(Math.abs(direction - targetDirection) < ROTATESPEED*dt)
             {
@@ -98,16 +104,16 @@ public class Monster {
             else
             {
                 if(targetDirection - direction > 0)
-                    direction += ROTATESPEED*dt;
+                    direction = (direction + ROTATESPEED*dt)%(Math.PI*2);
                 else
-                    direction -= ROTATESPEED*dt;
+                    direction = (direction - ROTATESPEED*dt)%(Math.PI*2);
             }
 
             newX = x + SPEED * Math.cos(direction) * dt;
             newY = y + SPEED * Math.sin(direction) * dt;
 
             if(newX < 0 || newX > map.getWidth() || newY < 0 || newY > map.getHeight()) {
-                direction += Math.PI;
+                direction = (direction + Math.PI)%(Math.PI*2);
                 targetDirection = direction;
             }
             else
