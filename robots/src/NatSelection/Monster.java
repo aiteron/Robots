@@ -2,7 +2,7 @@ package NatSelection;
 
 public class Monster {
 
-    private final double SPEED = 0.05;
+    private final double SPEED = 0.1;
     private double x, y, direction;
     private Pair<Integer, Integer> targetCoords;
     private NSMap map;
@@ -33,6 +33,8 @@ public class Monster {
         Если нет - идет рандомно. (Точнее в +- том направлении что двигался. И если врезался - то в обратном)
          */
 
+        double newX, newY;
+
         if(targetCoords == null)
         {
             targetCoords = map.getTarget((int)x, (int)y);
@@ -58,18 +60,34 @@ public class Monster {
             }
             else
             {
-                // TODO Добавить проверку на выход за границы экрана
-                x += SPEED * Math.cos(direction) * dt;
-                y += SPEED * Math.sin(direction) * dt;
+                newX = x + SPEED * Math.cos(direction) * dt;
+                newY = y + SPEED * Math.sin(direction) * dt;
+
+                if(newX < 0 || newX > map.getWidth() || newY < 0 || newY > map.getHeight())
+                    direction += Math.PI;
+                else
+                {
+                    x = newX;
+                    y = newY;
+                }
+
             }
         }
         else
         {
-            direction += (Math.random()*Math.PI) - Math.PI/2;
+            direction += (Math.random()*Math.PI/2) - Math.PI/4;
 
-            // TODO Добавить проверку на выход за границы экрана
-            x += SPEED * Math.cos(direction) * dt;
-            y += SPEED * Math.sin(direction) * dt;
+
+            newX = x + SPEED * Math.cos(direction) * dt;
+            newY = y + SPEED * Math.sin(direction) * dt;
+
+            if(newX < 0 || newX > map.getWidth() || newY < 0 || newY > map.getHeight())
+                direction += Math.PI;
+            else
+            {
+                x = newX;
+                y = newY;
+            }
         }
 
     }
