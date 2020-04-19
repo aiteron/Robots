@@ -135,7 +135,7 @@ public class NSMap extends JPanel
                     iterationTimer = ITER_DURATION;
                     isEndOfIteration = false;
 
-                    if(iterationCounter == iterationCount)
+                    if(iterationCounter >= iterationCount)
                     {
                         isActive = false;
                         return;

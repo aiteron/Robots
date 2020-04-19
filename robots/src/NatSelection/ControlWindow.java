@@ -35,6 +35,7 @@ public class ControlWindow extends JInternalFrame
         JLabel iterationsCountLabel  = new JLabel(localization.getString("iterationsCountLabel"));
 
         JButton startButton = new JButton(localization.getString("StartButtonLabel"));
+        JButton updateButton = new JButton(localization.getString("UpdateButtonLabel"));
 
 
 
@@ -55,6 +56,20 @@ public class ControlWindow extends JInternalFrame
             }
         });
 
+        updateButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                if(foodCountTF.getText().equals("") || mobsCountTF.getText().equals("") || iterationsCountTF.getText().equals(""))
+                {
+                    JOptionPane.showMessageDialog((Component) e.getSource(),
+                            localization.getString("ErrorMessage_EmptyTextField"));
+                }
+                else
+                {
+                    gameWindow.setCountFood( Integer.parseInt(foodCountTF.getText()));
+                }
+            }
+        });
+
 
 // Define the panel to hold the buttons
         JPanel panel = new JPanel();
@@ -66,6 +81,7 @@ public class ControlWindow extends JInternalFrame
         panel.add(iterationsCountTF);
         panel.add(iterationsCountLabel);
         panel.add(startButton);
+        panel.add(updateButton);
 
         add(panel);
 
