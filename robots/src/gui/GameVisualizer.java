@@ -1,17 +1,12 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel
 {
@@ -19,13 +14,12 @@ public class GameVisualizer extends JPanel
     
     private static Timer initTimer() 
     {
-        Timer timer = new Timer("events generator", true);
-        return timer;
+        return new Timer("events generator", true);
     }
     
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100; 
-    private volatile double m_robotDirection = 0; 
+    private volatile double m_robotDirection = 0;
 
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
@@ -94,9 +88,7 @@ public class GameVisualizer extends JPanel
         double distance = distance(m_targetPositionX, m_targetPositionY, 
             m_robotPositionX, m_robotPositionY);
         if (distance < 0.5)
-        {
             return;
-        }
 
         if(m_robotPositionX < 0 || m_robotPositionX > this.getWidth()
                 || m_robotPositionY < 0 || m_robotPositionY > this.getHeight())

@@ -1,32 +1,24 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
-import java.util.ResourceBundle;
-import java.awt.*;
-import java.beans.PropertyVetoException;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
-import javax.swing.*;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+
+import javax.swing.*;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import java.awt.*;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
-    private final ResourceBundle localization;
+    private final Config config;
 
-    public LogWindow(LogWindowSource logSource, ResourceBundle localization)
+    public LogWindow(LogWindowSource logSource, Config config)
     {
-        super(localization.getString("protocol"), true, true, true, true);
-        this.localization = localization;
+        super(config.getLocalization("protocol"), true, true, true, true);
+        this.config = config;
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");
@@ -44,10 +36,10 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         // Confirm close window
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
-                Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
+                Object[] options = { config.getLocalization("yes"), config.getLocalization("no") };
                 if (JOptionPane.showOptionDialog(e.getInternalFrame(),
-                        localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
-                        0,
+                        config.getLocalization("closeWindowQuestion"), config.getLocalization("closeWindowTitle"),
+                        JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null, options, null) == 0)
                 {

@@ -1,26 +1,18 @@
 package gui;
 
-import log.LogChangeListener;
 import log.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 public class MenuBar extends JMenuBar {
-    private JFrame parentObj;
-    private final ResourceBundle localization;
-    private final Properties config;
+    private final JFrame parentObj;
+    private final Config config;
 
-    public MenuBar(JFrame par, ResourceBundle localization, Properties configuration)
+    public MenuBar(JFrame par, Config configuration)
     {
         parentObj = par;
-        this.localization = localization;
         config = configuration;
 
         add(createMenuCategory_LookAndFeel());
@@ -60,15 +52,15 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_LookAndFeel()
     {
-        JMenu lookAndFeelMenu = createMenuCategory(localization.getString("displayMode"), KeyEvent.VK_V, localization.getString("displayModeDesc"));
+        JMenu lookAndFeelMenu = createMenuCategory(config.getLocalization("displayMode"), KeyEvent.VK_V, config.getLocalization("displayModeDesc"));
 
-        JMenuItem systemLook = createMenuItem(localization.getString("systemScheme"), KeyEvent.VK_S, (event) -> {
+        JMenuItem systemLook = createMenuItem(config.getLocalization("systemScheme"), KeyEvent.VK_S, (event) -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
         });
         lookAndFeelMenu.add(systemLook);
 
-        JMenuItem universalLook = createMenuItem(localization.getString("universalScheme"), KeyEvent.VK_S,(event) -> {
+        JMenuItem universalLook = createMenuItem(config.getLocalization("universalScheme"), KeyEvent.VK_S,(event) -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
         });
@@ -79,10 +71,10 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_Test()
     {
-        JMenu testMenu = createMenuCategory(localization.getString("tests"), KeyEvent.VK_T, localization.getString("testsDesc"));
+        JMenu testMenu = createMenuCategory(config.getLocalization("tests"), KeyEvent.VK_T, config.getLocalization("testsDesc"));
 
-        JMenuItem logMessage = createMenuItem(localization.getString("logMessage"), KeyEvent.VK_S, (event) -> {
-            Logger.debug(localization.getString("newString"));
+        JMenuItem logMessage = createMenuItem(config.getLocalization("logMessage"), KeyEvent.VK_S, (event) -> {
+            Logger.debug(config.getLocalization("newString"));
         });
         testMenu.add(logMessage);
 
@@ -91,14 +83,14 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_Tools()
     {
-        JMenu toolMenu = createMenuCategory(localization.getString("menuBarTools"), KeyEvent.VK_I, localization.getString("menuBarTools"));
+        JMenu toolMenu = createMenuCategory(config.getLocalization("menuBarTools"), KeyEvent.VK_I, config.getLocalization("menuBarTools"));
 
         // Close window with confirm window
-        JMenuItem exitItem = createMenuItem(localization.getString("menuItemExit"), KeyEvent.VK_E, (event) -> {
-            Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
+        JMenuItem exitItem = createMenuItem(config.getLocalization("menuItemExit"), KeyEvent.VK_E, (event) -> {
+            Object[] options = { config.getLocalization("yes"), config.getLocalization("no") };
             if (JOptionPane.showOptionDialog(this.getParent(),
-                    localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
-                    0,
+                    config.getLocalization("closeWindowQuestion"), config.getLocalization("closeWindowTitle"),
+                    JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null, options, null) == 0)
             {
@@ -113,6 +105,7 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_Language()
     {
+<<<<<<< HEAD
         JMenu langMenu = createMenuCategory(localization.getString("menuBarLang"), KeyEvent.VK_L, localization.getString("menuBarLang"));
 
         JMenuItem rusLangItem = createMenuItem(localization.getString("menuItemLangRus"), KeyEvent.VK_R, (event) -> {
@@ -124,17 +117,19 @@ public class MenuBar extends JMenuBar {
                 ex.printStackTrace();
             }
             JOptionPane.showMessageDialog(this.getParent(), localization.getString("ChangeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
+=======
+        JMenu langMenu = createMenuCategory(config.getLocalization("menuBarLang"), KeyEvent.VK_L, config.getLocalization("menuBarLang"));
+
+        // Close window with confirm window
+        JMenuItem rusLangItem = createMenuItem(config.getLocalization("menuItemLangRus"), KeyEvent.VK_R, (event) -> {
+            config.setLocale("ru", "RU");
+            JOptionPane.showMessageDialog(this.getParent(), config.getLocalization("changeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
+>>>>>>> Task2
         });
 
-        JMenuItem engLangItem = createMenuItem(localization.getString("menuItemLangEng"), KeyEvent.VK_E, (event) -> {
-            try {
-                config.setProperty("lang", "en");
-                config.setProperty("country", "US");
-                config.store(new FileOutputStream("src/resources/config.properties"), null);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            JOptionPane.showMessageDialog(this.getParent(), localization.getString("ChangeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
+        JMenuItem engLangItem = createMenuItem(config.getLocalization("menuItemLangEng"), KeyEvent.VK_E, (event) -> {
+            config.setLocale("en", "US");
+            JOptionPane.showMessageDialog(this.getParent(), config.getLocalization("changeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
         });
 
         langMenu.add(rusLangItem);
