@@ -33,7 +33,7 @@ public class NSWindow extends JInternalFrame
         // Confirm close window
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
-                Object[] options = { config.getLocalization("closeWindowYes"), config.getLocalization("closeWindowNo") };
+                Object[] options = { config.getLocalization("yes"), config.getLocalization("no") };
                 if (JOptionPane.showOptionDialog(e.getInternalFrame(),
                         config.getLocalization("closeWindowQuestion"), config.getLocalization("closeWindowTitle"),
                         0,

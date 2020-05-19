@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -73,7 +74,15 @@ public class Config {
     }
 
     public String getLocalization(String key) {
-        return localization.getString(key);
+        String value;
+        try{
+            value = localization.getString(key);
+        }
+        catch (MissingResourceException e)
+        {
+            value = "error text";
+        }
+        return value;
     }
 
     private void save()

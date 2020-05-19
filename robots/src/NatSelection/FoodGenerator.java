@@ -117,7 +117,6 @@ public class FoodGenerator implements Runnable {
         {
             if(isActive)
             {
-                System.out.println("create food");
                 createFood();
                 try {
                     Thread.sleep(1000);
