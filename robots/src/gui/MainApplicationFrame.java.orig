@@ -1,31 +1,22 @@
 package gui;
 
-import java.awt.*;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import log.Logger;
 
 import javax.swing.*;
+<<<<<<< HEAD
+import java.awt.*;
+=======
 
 import NatSelection.ControlWindow;
 import NatSelection.NSWindow;
 import log.Logger;
+>>>>>>> NatSelection
 
 
-public class MainApplicationFrame extends JFrame
-{
+public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final Config config;
-    
+
     public MainApplicationFrame() {
         config = new Config("src/resources/config.properties",
                 "resources/LocalizationResources");
@@ -37,26 +28,33 @@ public class MainApplicationFrame extends JFrame
                 screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
-        
 
-        LogWindow logWindow = createLogWindow();
+        var logWindow = createLogWindow();
         addWindow(logWindow);
 
-
-        NSWindow gameWindow = new NSWindow(config);
-        gameWindow.setSize(400,  400);
+<<<<<<< HEAD
+        var gameWindow = createGameWindow();
         addWindow(gameWindow);
-
-        ControlWindow controlWindow = new ControlWindow(config, gameWindow);
-        controlWindow.setSize(400, 200);
-        controlWindow.setLocation(400, 0);
-        addWindow(controlWindow);
 
         var windows = desktopPane.getAllFrames();
         if (config.windowConfigsArePresent() && userWantsToRestoreWindows())
             config.loadWindowStates(windows);
 
         setJMenuBar(new MenuBar(this, config));
+=======
+
+        NSWindow gameWindow = new NSWindow(localization);
+        gameWindow.setSize(400,  400);
+        addWindow(gameWindow);
+
+        ControlWindow controlWindow = new ControlWindow(localization, gameWindow);
+        controlWindow.setSize(400, 200);
+        controlWindow.setLocation(400, 0);
+        addWindow(controlWindow);
+
+
+        setJMenuBar(new MenuBar(this, localization, config));
+>>>>>>> NatSelection
 
         // Confirm close window
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -96,12 +94,16 @@ public class MainApplicationFrame extends JFrame
         Logger.debug(config.getLocalization("protocolWorking"));
         return logWindow;
     }
+
+    protected GameWindow createGameWindow() {
+        var gameWindow = new GameWindow(config);
+        gameWindow.setSize(400, 400);
+        return gameWindow;
+    }
     
     protected void addWindow(JInternalFrame frame)
     {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
-
-
 }

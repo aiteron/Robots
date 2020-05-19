@@ -18,10 +18,13 @@ menuItemExit = Exit
 menuBarLang = Language
 menuItemLangRus = Russian
 menuItemLangEng = English
+<<<<<<< HEAD
 changeLangInfo = Restart the application to change the language
 restoreWindowsQuestion=Saved window state detected.\n\
 Restore window state?
 restoreWindowsTitle=Restore windows?
+=======
+ChangeLangInfo = Restart the application to change the language
 NSWindow = Natural Selection
 NSControlWindow = NS Control
 foodCountLabel = Food count
@@ -30,3 +33,4 @@ iterationsCountLabel = Iterations count
 StartButtonLabel = Start
 ErrorMessage_EmptyTextField = Enter the values!
 UpdateButtonLabel = Update food count
+>>>>>>> NatSelection

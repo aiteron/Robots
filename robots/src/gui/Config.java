@@ -61,6 +61,8 @@ public class Config {
             setProperty(name, "Minimized", String.valueOf(window.isIcon()));
             setProperty(name, "PositionX", String.valueOf(window.getX()));
             setProperty(name, "PositionY", String.valueOf(window.getY()));
+            setProperty(name, "Width", String.valueOf(window.getWidth()));
+            setProperty(name, "Height", String.valueOf(window.getHeight()));
         }
     }
 
@@ -97,12 +99,15 @@ public class Config {
         var isMinimized = Boolean.parseBoolean(getProperty(name, "Minimized"));
         var x = Integer.parseInt(getProperty(name, "PositionX"));
         var y = Integer.parseInt(getProperty(name, "PositionY"));
+        var width = Integer.parseInt(getProperty(name, "Width"));
+        var height = Integer.parseInt(getProperty(name, "Height"));
         try {
             window.setIcon(isMinimized);
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
         window.setLocation(x, y);
+        window.setSize(width, height);
     }
 
     private String getProperty(String prefix, String property) {
