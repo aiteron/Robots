@@ -11,7 +11,7 @@ public class MainApplicationFrame extends JFrame {
     private final Config config;
 
     public MainApplicationFrame() {
-        config = new Config("resources/config.properties",
+        config = new Config("src/resources/config.properties",
                 "resources/LocalizationResources");
 
         int inset = 50;
