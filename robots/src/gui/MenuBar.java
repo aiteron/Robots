@@ -105,26 +105,12 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_Language()
     {
-<<<<<<< HEAD
-        JMenu langMenu = createMenuCategory(localization.getString("menuBarLang"), KeyEvent.VK_L, localization.getString("menuBarLang"));
-
-        JMenuItem rusLangItem = createMenuItem(localization.getString("menuItemLangRus"), KeyEvent.VK_R, (event) -> {
-            try {
-                config.setProperty("lang", "ru");
-                config.setProperty("country", "RU");
-                config.store(new FileOutputStream("src/resources/config.properties"), null);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            JOptionPane.showMessageDialog(this.getParent(), localization.getString("ChangeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
-=======
         JMenu langMenu = createMenuCategory(config.getLocalization("menuBarLang"), KeyEvent.VK_L, config.getLocalization("menuBarLang"));
 
         // Close window with confirm window
         JMenuItem rusLangItem = createMenuItem(config.getLocalization("menuItemLangRus"), KeyEvent.VK_R, (event) -> {
             config.setLocale("ru", "RU");
             JOptionPane.showMessageDialog(this.getParent(), config.getLocalization("changeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
->>>>>>> Task2
         });
 
         JMenuItem engLangItem = createMenuItem(config.getLocalization("menuItemLangEng"), KeyEvent.VK_E, (event) -> {
