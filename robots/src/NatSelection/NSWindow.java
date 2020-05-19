@@ -12,21 +12,17 @@ import javax.swing.JPanel;
 
 public class NSWindow extends JInternalFrame
 {
-    private final NSMap m_visualizer;
+    private final NSMap visualizer;
     private final ResourceBundle localization;
     public NSWindow(ResourceBundle localization)
     {
         super(localization.getString("NSWindow"), true, true, true, true);
         this.localization = localization;
 
-
-
-
-        m_visualizer = new NSMap();
+        visualizer = new NSMap(this);
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
+        panel.add(visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
-
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
@@ -51,19 +47,19 @@ public class NSWindow extends JInternalFrame
     }
 
     public void setCountFood(int i) {
-        m_visualizer.setCountFood(i);
+        visualizer.setFoodGenerateCoeff(i);
     }
 
     public void setCountMobs(int i) {
-        m_visualizer.setCountMobs(i);
+        visualizer.setCountMobs(i);
     }
 
     public void setCountIterations(int i) {
-        m_visualizer.setCountIterations(i);
+        visualizer.setCountIterations(i);
     }
 
     public void startSimulation() {
-        m_visualizer.startSimulation();
+        visualizer.startSimulation();
     }
 }
 

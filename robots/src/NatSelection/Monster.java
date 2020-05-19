@@ -37,13 +37,10 @@ public class Monster {
         if(isAtHome)
             return;
 
-
         if(foodEaten < 2 && !isGoingHome)
         {
             targetCoords = map.getTarget((int)x, (int)y, visionDistance);
         }
-
-
 
         if(targetCoords != null)
         {
@@ -55,7 +52,6 @@ public class Monster {
                 rotateToTargetDirection(dt);
 
             // TODO может вынести то что выше в нижнюю часть?
-
 
             if(distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < SPEED*dt)
             {
@@ -77,7 +73,7 @@ public class Monster {
 
                     return;
                 }
-                if(map.removeFood(x, y))
+                if(!isGoingHome && map.removeFood(x, y))
                     foodEaten++;
 
                 if(foodEaten == 2)
