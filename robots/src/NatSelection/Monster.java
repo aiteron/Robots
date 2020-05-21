@@ -117,8 +117,6 @@ public class Monster extends Observable {
                 updateCoords(newX, newY);
             }
         }
-
-
     }
 
     private void rotateToTargetDirection(double dt)

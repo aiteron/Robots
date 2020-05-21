@@ -29,11 +29,12 @@ public class MainApplicationFrame extends JFrame
                 screenSize.height - inset * 2);
         setContentPane(desktopPane);
         
-
+        // Log
         LogWindow logWindow = createLogWindow();
         logWindow.setLocation(1200, 0);
         addWindow(logWindow);
 
+        // Game windows
         NSWindow gameWindow = new NSWindow(config);
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
@@ -43,7 +44,7 @@ public class MainApplicationFrame extends JFrame
         controlWindow.setLocation(400, 0);
         addWindow(controlWindow);
 
-        // Stats
+        // Info windows
         RobotCoordsWindow robotCoordsWindow = new RobotCoordsWindow(config, gameWindow);
         robotCoordsWindow.setSize(400, 100);
         robotCoordsWindow.setLocation(800, 0);
@@ -55,8 +56,6 @@ public class MainApplicationFrame extends JFrame
         robotDistanceWindow.setLocation(800, 100);
         gameWindow.setMonsterDistanceListener(robotDistanceWindow);
         addWindow(robotDistanceWindow);
-
-
 
         var windows = desktopPane.getAllFrames();
         if (config.windowConfigsArePresent() && userWantsToRestoreWindows())
