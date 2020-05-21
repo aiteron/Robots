@@ -30,10 +30,16 @@ public class FoodGenerator implements Runnable {
     private void createFood()
     {
         int num = PoissonKnuth();
+        Pair<Integer, Integer>[] coords = new Pair[num];
+        for (int i = 0; i < num; i++) {
+            int x = (int) (Math.random() * (map.getWidth()));
+            int y = (int) (Math.random() * (map.getHeight()));
+            coords[i] = new Pair<>(x, y);
+        }
 
         synchronized (foodCoords) {
             for (int i = 0; i < num; i++) {
-                foodCoords.add(new Pair<Integer, Integer>((int) (Math.random() * (map.getWidth())), (int) (Math.random() * (map.getHeight()))));
+                foodCoords.add(new Pair<Integer, Integer>(coords[i].getFirst(), coords[i].getSecond()));
             }
         }
     }

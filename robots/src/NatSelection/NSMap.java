@@ -170,7 +170,13 @@ public class NSMap extends JPanel
             drawTarget(g2d, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
 
         for(int i = 0; i < monsters.size(); i++)
-            drawMonster(g2d, monsters.get(i).getCoords().getFirst(), monsters.get(i).getCoords().getSecond(), monsters.get(i).getDirection(), monsters.get(i).getColor());
+        {
+            if(monsters.get(i) != observableMonster)
+                drawMonster(g2d, monsters.get(i).getCoords().getFirst(), monsters.get(i).getCoords().getSecond(), monsters.get(i).getDirection(), monsters.get(i).getColor());
+        }
+
+        if(observableMonster != null)
+            drawMonster(g2d, observableMonster.getCoords().getFirst(), observableMonster.getCoords().getSecond(), observableMonster.getDirection(), observableMonster.getColor());
     }
 
     private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
