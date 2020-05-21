@@ -15,7 +15,8 @@ public class NSMap extends JPanel
     private final int ITER_DURATION = 5000;
 
     private final Timer timer = new Timer("events generator", true);
-    private final ArrayList<Monster> monsters = new ArrayList<>();
+    private ArrayList<Monster> monsters = new ArrayList<>();
+    private ArrayList<Observer> MonsterListeners = new ArrayList<>();
     private final FoodGenerator foodGenerator;
 
     private NSWindow window;
@@ -112,8 +113,10 @@ public class NSMap extends JPanel
                     Iterator<Monster> i = monsters.iterator();
                     while (i.hasNext()) {
                         Monster s = i.next();
-                        if(!s.isAlive())
+                        if(!s.isAlive()) {
+                            s.deleteObservers();
                             i.remove();
+                        }
                     }
 
                     iterationCounter++;
@@ -219,13 +222,24 @@ public class NSMap extends JPanel
         foodGenerator.restart();
         monsters.clear();
 
-
         createMonsters(mobCount);
+
+        for (var listener :
+                MonsterListeners) {
+            monsters.get(0).addObserver(listener);
+        }
 
         iterationCounter = 0;
         isActive = true;
         isEndOfIteration = false;
         allMonstersAtHome = true;
         iterationTimer = ITER_DURATION;
+    }
+
+    public void setMonsterCoordsListener(Observer listener) {
+        MonsterListeners.add(listener);
+
+        if(monsters.size() != 0)
+            monsters.get(0).addObserver(listener);
     }
 }

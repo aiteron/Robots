@@ -1,8 +1,10 @@
 package NatSelection;
 
 import gui.Config;
+import gui.MainApplicationFrame;
 
 import java.awt.BorderLayout;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 
@@ -63,5 +65,7 @@ public class NSWindow extends JInternalFrame
     public void startSimulation() {
         visualizer.startSimulation();
     }
+
+    public void setMonsterCoordsListener(Observer listener) { visualizer.setMonsterCoordsListener(listener); }
 }
 

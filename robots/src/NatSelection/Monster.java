@@ -1,10 +1,11 @@
 package NatSelection;
 
-public class Monster {
+import java.util.Observable;
+
+public class Monster extends Observable {
 
     private final double SPEED = 0.1;
     private final double ROTATESPEED = 0.01;
-
 
     private double x, y, direction, targetDirection, visionDistance = 60;
     private Pair<Integer, Integer> targetCoords;
@@ -55,8 +56,7 @@ public class Monster {
 
             if(distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < SPEED*dt)
             {
-                x = targetCoords.getFirst();
-                y = targetCoords.getSecond();
+                updateCoords(targetCoords.getFirst(), targetCoords.getSecond());
 
                 targetCoords = null;
                 targetDirection = -1;
@@ -88,8 +88,7 @@ public class Monster {
                     direction = (direction + Math.PI)%(Math.PI*2);
                 else
                 {
-                    x = newX;
-                    y = newY;
+                    updateCoords(newX, newY);
                 }
             }
         }
@@ -109,10 +108,10 @@ public class Monster {
             }
             else
             {
-                x = newX;
-                y = newY;
+                updateCoords(newX, newY);
             }
         }
+
 
     }
 
@@ -193,5 +192,14 @@ public class Monster {
     public void activate() {
         isAtHome = false;
         foodEaten = 0;
+    }
+
+    private void updateCoords(double x, double y)
+    {
+        this.x = x;
+        this.y = y;
+
+        setChanged();
+        notifyObservers(new Pair<Integer, Integer>((int)x, (int)y));
     }
 }

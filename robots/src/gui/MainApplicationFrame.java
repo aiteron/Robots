@@ -3,21 +3,12 @@ package gui;
 import java.awt.*;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.swing.*;
 
 import NatSelection.ControlWindow;
 import NatSelection.NSWindow;
+import NatSelection.RobotCoordsWindow;
 import log.Logger;
 
 
@@ -35,13 +26,11 @@ public class MainApplicationFrame extends JFrame
         setBounds(inset, inset,
                 screenSize.width - inset * 2,
                 screenSize.height - inset * 2);
-
         setContentPane(desktopPane);
         
 
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
-
 
         NSWindow gameWindow = new NSWindow(config);
         gameWindow.setSize(400,  400);
@@ -51,6 +40,7 @@ public class MainApplicationFrame extends JFrame
         controlWindow.setSize(400, 200);
         controlWindow.setLocation(400, 0);
         addWindow(controlWindow);
+
 
         var windows = desktopPane.getAllFrames();
         if (config.windowConfigsArePresent() && userWantsToRestoreWindows())
