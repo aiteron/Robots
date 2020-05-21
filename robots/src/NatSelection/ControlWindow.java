@@ -9,9 +9,6 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ResourceBundle;
 
 
 public class ControlWindow extends JInternalFrame
@@ -155,7 +152,7 @@ class MyIntFilter extends DocumentFilter {
         sb.append(doc.getText(0, doc.getLength()));
         sb.delete(offset, offset + length);
 
-        if (test(sb.toString())) {
+        if (test(sb.toString()) || sb.length() == 0) {
             super.remove(fb, offset, length);
         } else {
             // warn the user and don't allow the insert
