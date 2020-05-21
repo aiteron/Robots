@@ -9,6 +9,7 @@ import javax.swing.*;
 import NatSelection.ControlWindow;
 import NatSelection.NSWindow;
 import NatSelection.RobotCoordsWindow;
+import NatSelection.RobotDistanceWindow;
 import log.Logger;
 
 
@@ -30,6 +31,7 @@ public class MainApplicationFrame extends JFrame
         
 
         LogWindow logWindow = createLogWindow();
+        logWindow.setLocation(1200, 0);
         addWindow(logWindow);
 
         NSWindow gameWindow = new NSWindow(config);
@@ -40,6 +42,20 @@ public class MainApplicationFrame extends JFrame
         controlWindow.setSize(400, 200);
         controlWindow.setLocation(400, 0);
         addWindow(controlWindow);
+
+        // Stats
+        RobotCoordsWindow robotCoordsWindow = new RobotCoordsWindow(config, gameWindow);
+        robotCoordsWindow.setSize(400, 100);
+        robotCoordsWindow.setLocation(800, 0);
+        gameWindow.setMonsterCoordsListener(robotCoordsWindow);
+        addWindow(robotCoordsWindow);
+
+        RobotDistanceWindow robotDistanceWindow = new RobotDistanceWindow(config, gameWindow);
+        robotDistanceWindow.setSize(400, 100);
+        robotDistanceWindow.setLocation(800, 100);
+        gameWindow.setMonsterDistanceListener(robotDistanceWindow);
+        addWindow(robotDistanceWindow);
+
 
 
         var windows = desktopPane.getAllFrames();

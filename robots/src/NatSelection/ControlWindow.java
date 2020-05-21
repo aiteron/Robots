@@ -68,33 +68,10 @@ public class ControlWindow extends JInternalFrame
             }
         });
 
-        JButton addCoordsListenerButton = new JButton(config.getLocalization("addCoordsListenerButtonLabel"));
-        addCoordsListenerButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                var desktopPane = (JDesktopPane)ControlWindow.this.getParent();
-
-                RobotCoordsWindow robotCoordsWindow = new RobotCoordsWindow(config, gameWindow);
-                robotCoordsWindow.setSize(400, 200);
-                robotCoordsWindow.setLocation(800, 0);
-
-                gameWindow.setMonsterCoordsListener(robotCoordsWindow);
-
-                desktopPane.add(robotCoordsWindow);
-                robotCoordsWindow.setVisible(true);
-            }
-        });
-
-        JButton addDistanceListenerButton = new JButton(config.getLocalization("addDistanceListenerButtonLabel"));
-        addDistanceListenerButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-
-            }
-        });
-
 
 // Define the panel to hold the buttons
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 2));
+        panel.setLayout(new GridLayout(4, 2));
         panel.add(foodCountTF);
         panel.add(foodCountLabel);
         panel.add(mobsCountTF);
@@ -103,9 +80,6 @@ public class ControlWindow extends JInternalFrame
         panel.add(iterationsCountLabel);
         panel.add(startButton);
         panel.add(updateButton);
-        panel.add(addCoordsListenerButton);
-        panel.add(addDistanceListenerButton);
-
         add(panel);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

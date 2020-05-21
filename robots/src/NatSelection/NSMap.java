@@ -16,7 +16,9 @@ public class NSMap extends JPanel
 
     private final Timer timer = new Timer("events generator", true);
     private ArrayList<Monster> monsters = new ArrayList<>();
-    private ArrayList<Observer> MonsterListeners = new ArrayList<>();
+    private Observer monsterCoordListener;
+    private Observer monsterDistanceListener;
+    private Monster observableMonster;
     private final FoodGenerator foodGenerator;
 
     private NSWindow window;
@@ -110,13 +112,24 @@ public class NSMap extends JPanel
 
                 if(allMonstersAtHome)
                 {
+                    if(observableMonster != null && !observableMonster.isAlive())
+                    {
+                        observableMonster.deleteObservers();
+                        observableMonster = null;
+                    }
+
                     Iterator<Monster> i = monsters.iterator();
                     while (i.hasNext()) {
-                        Monster s = i.next();
-                        if(!s.isAlive()) {
-                            s.deleteObservers();
+                        Monster mon = i.next();
+                        if(!mon.isAlive()) {
                             i.remove();
                         }
+                    }
+                    if(observableMonster == null && monsters.size() != 0) {
+                        observableMonster = monsters.get(0);
+                        observableMonster.addObserver(monsterCoordListener);
+                        observableMonster.addObserver(monsterDistanceListener);
+                        observableMonster.setColor(Color.MAGENTA);
                     }
 
                     iterationCounter++;
@@ -138,6 +151,7 @@ public class NSMap extends JPanel
         for (int i = 0; i < monsters.size(); i++) {
             monsters.get(i).update(10);
         }
+
     }
 
     protected void onRedrawEvent()
@@ -156,7 +170,7 @@ public class NSMap extends JPanel
             drawTarget(g2d, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
 
         for(int i = 0; i < monsters.size(); i++)
-            drawMonster(g2d, monsters.get(i).getCoords().getFirst(), monsters.get(i).getCoords().getSecond(), monsters.get(i).getDirection());
+            drawMonster(g2d, monsters.get(i).getCoords().getFirst(), monsters.get(i).getCoords().getSecond(), monsters.get(i).getDirection(), monsters.get(i).getColor());
     }
 
     private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
@@ -179,11 +193,11 @@ public class NSMap extends JPanel
         drawOval(g, x, y, 5, 5);
     }
 
-    private void drawMonster(Graphics2D g, int x, int y, double direction)
+    private void drawMonster(Graphics2D g, int x, int y, double direction, Color color)
     {
         AffineTransform t = AffineTransform.getRotateInstance(direction, x, y);
         g.setTransform(t);
-        g.setColor(Color.BLUE);
+        g.setColor(color);
         fillOval(g, x, y, 20, 10);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 20, 10);
@@ -224,9 +238,12 @@ public class NSMap extends JPanel
 
         createMonsters(mobCount);
 
-        for (var listener :
-                MonsterListeners) {
-            monsters.get(0).addObserver(listener);
+        if(monsters.size() != 0)
+        {
+            observableMonster = monsters.get(0);
+            observableMonster.addObserver(monsterCoordListener);
+            observableMonster.addObserver(monsterDistanceListener);
+            observableMonster.setColor(Color.MAGENTA);
         }
 
         iterationCounter = 0;
@@ -237,9 +254,11 @@ public class NSMap extends JPanel
     }
 
     public void setMonsterCoordsListener(Observer listener) {
-        MonsterListeners.add(listener);
+        monsterCoordListener = listener;
+    }
 
-        if(monsters.size() != 0)
-            monsters.get(0).addObserver(listener);
+    public void setMonsterDistanceListener(Observer listener)
+    {
+        monsterDistanceListener = listener;
     }
 }

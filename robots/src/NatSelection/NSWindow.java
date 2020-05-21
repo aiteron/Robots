@@ -67,5 +67,10 @@ public class NSWindow extends JInternalFrame
     }
 
     public void setMonsterCoordsListener(Observer listener) { visualizer.setMonsterCoordsListener(listener); }
+
+    public void setMonsterDistanceListener(Observer listener)
+    {
+        visualizer.setMonsterDistanceListener(listener);
+    }
 }
 

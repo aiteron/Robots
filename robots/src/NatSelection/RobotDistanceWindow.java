@@ -1,34 +1,30 @@
 package NatSelection;
 
-import NatSelection.NSWindow;
-import NatSelection.Pair;
 import gui.Config;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.text.PlainDocument;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
-
-public class RobotCoordsWindow extends JInternalFrame implements Observer
+public class RobotDistanceWindow  extends JInternalFrame implements Observer
 {
     private final Config config;
     private final NSWindow gameWindow;
+    private String distanceTitle;
     JLabel robotCoordsValuesLabel;
 
-    public RobotCoordsWindow(Config config, NSWindow gameWindow)
+    public RobotDistanceWindow(Config config, NSWindow gameWindow)
     {
-        super(config.getLocalization("NSRobotCoordsWindow"), true, true, true, true);
+        super(config.getLocalization("NSDistanceWindow"), true, true, true, true);
         this.config = config;
         this.gameWindow = gameWindow;
+        distanceTitle = config.getLocalization("NSDistance");
 
-        JLabel robotCoordsTitleLabel = new JLabel(config.getLocalization("NSRobotCoordsTitleLabel"));
-        robotCoordsValuesLabel  = new JLabel("x, y");
+        JLabel robotCoordsTitleLabel = new JLabel(config.getLocalization("NSdistanceToFood"));
+        robotCoordsValuesLabel  = new JLabel("");
 
 // Define the panel to hold the buttons
         JPanel panel = new JPanel();
@@ -60,10 +56,10 @@ public class RobotCoordsWindow extends JInternalFrame implements Observer
     @Override
     public void update(Observable o, Object arg) {
         var event = (Event)arg;
-        if(event.type == EventType.Coords)
+        if(event.type == EventType.Distance)
         {
-            var coords = (Pair<Integer, Integer>) event.data;
-            robotCoordsValuesLabel.setText("x = " + coords.getFirst() + ", y = " + coords.getSecond());
+            var dist = (double) event.data;
+            robotCoordsValuesLabel.setText(distanceTitle + " " + (int)dist);
         }
     }
 }

@@ -1,5 +1,6 @@
 package NatSelection;
 
+import java.awt.*;
 import java.util.Observable;
 
 public class Monster extends Observable {
@@ -12,6 +13,7 @@ public class Monster extends Observable {
     private NSMap map;
     private int foodEaten = 0;
     private boolean isAlive = true, isAtHome = true, isGoingHome = false;
+    private Color color;
 
     public Monster(NSMap nsMap, int x, int y)
     {
@@ -20,6 +22,7 @@ public class Monster extends Observable {
         direction = Math.random()*Math.PI*2;
         targetDirection = -1;
         map = nsMap;
+        color = Color.BLUE;
 
         targetCoords = null;
     }
@@ -34,6 +37,9 @@ public class Monster extends Observable {
     public void update(double dt)
     {
         double newX, newY;
+
+        if(countObservers() != 0)
+            updateDistanceToFood();
 
         if(isAtHome)
             return;
@@ -198,8 +204,31 @@ public class Monster extends Observable {
     {
         this.x = x;
         this.y = y;
+        if(countObservers() != 0)
+        {
+            setChanged();
+            notifyObservers(new Event(EventType.Coords, new Pair<Integer, Integer>((int)x, (int)y)));
+        }
+    }
+
+    private void updateDistanceToFood()
+    {
+        var foodCoords = map.getTarget((int)x, (int)y, Double.MAX_VALUE);
+        double distance = 0;
+        if(foodCoords != null)
+            distance = distance(x, y, foodCoords.getFirst(), foodCoords.getSecond());
 
         setChanged();
-        notifyObservers(new Pair<Integer, Integer>((int)x, (int)y));
+        notifyObservers(new Event(EventType.Distance, distance));
+    }
+
+    public void setColor(Color color)
+    {
+        this.color = color;
+    }
+
+    public Color getColor()
+    {
+        return color;
     }
 }
