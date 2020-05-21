@@ -119,6 +119,8 @@ class MyIntFilter extends DocumentFilter {
     }
 
     private boolean test(String text) {
+        if (text.isEmpty())
+            return true;
         try {
             Integer.parseInt(text);
             return true;
@@ -152,7 +154,7 @@ class MyIntFilter extends DocumentFilter {
         sb.append(doc.getText(0, doc.getLength()));
         sb.delete(offset, offset + length);
 
-        if (test(sb.toString()) || sb.length() == 0) {
+        if (test(sb.toString())) {
             super.remove(fb, offset, length);
         } else {
             // warn the user and don't allow the insert
