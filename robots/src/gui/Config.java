@@ -129,7 +129,12 @@ public class Config {
 
     protected ResourceBundle loadLocalization(String localizationPath)
     {
-        return ResourceBundle.getBundle(localizationPath,
-                new Locale(properties.getProperty("lang"), properties.getProperty("country")));
+        try {
+            var locale = new Locale(properties.getProperty("lang"), properties.getProperty("country"));
+            return ResourceBundle.getBundle(localizationPath, locale);
+        } catch (MissingResourceException e) {
+            var locale = new Locale("en");
+            return ResourceBundle.getBundle(localizationPath, locale);
+        }
     }
 }

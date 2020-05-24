@@ -1,16 +1,13 @@
 package gui;
 
-import java.awt.*;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-
-import javax.swing.*;
-
 import NatSelection.ControlWindow;
 import NatSelection.NSWindow;
 import NatSelection.RobotCoordsWindow;
 import NatSelection.RobotDistanceWindow;
 import log.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 public class MainApplicationFrame extends JFrame
@@ -19,7 +16,7 @@ public class MainApplicationFrame extends JFrame
     private final Config config;
     
     public MainApplicationFrame() {
-        config = new Config("src/resources/config.properties",
+        config = new Config("resources/config.properties",
                 "resources/LocalizationResources");
 
         int inset = 50;
