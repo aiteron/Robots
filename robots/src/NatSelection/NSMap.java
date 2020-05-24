@@ -1,14 +1,17 @@
 package NatSelection;
 
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.util.*;
+import com.github.davidmoten.rtree.Entry;
+import com.github.davidmoten.rtree.RTree;
+import com.github.davidmoten.rtree.geometry.Point;
 
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NSMap extends JPanel
 {
@@ -77,9 +80,8 @@ public class NSMap extends JPanel
 
         if(allMonstersAtHome)       // Start iteration
         {
-            for(int i = 0; i < monsters.size(); i++)
-            {
-                monsters.get(i).activate();
+            for (Monster monster : monsters) {
+                monster.activate();
             }
             allMonstersAtHome = false;
         }
@@ -89,10 +91,9 @@ public class NSMap extends JPanel
         {
             if(!isEndOfIteration)
             {
-                for(int i = 0; i < monsters.size(); i++)
-                {
-                    if(!monsters.get(i).isAtHome())
-                        monsters.get(i).goHome();
+                for (Monster monster : monsters) {
+                    if (!monster.isAtHome())
+                        monster.goHome();
                 }
                 isEndOfIteration = true;
                 foodGenerator.stop();
@@ -101,10 +102,8 @@ public class NSMap extends JPanel
             {
                 allMonstersAtHome = true;
 
-                for(int i = 0; i < monsters.size(); i++)
-                {
-                    if(!monsters.get(i).isAtHome())
-                    {
+                for (Monster monster : monsters) {
+                    if (!monster.isAtHome()) {
                         allMonstersAtHome = false;
                         break;
                     }
@@ -118,13 +117,7 @@ public class NSMap extends JPanel
                         observableMonster = null;
                     }
 
-                    Iterator<Monster> i = monsters.iterator();
-                    while (i.hasNext()) {
-                        Monster mon = i.next();
-                        if(!mon.isAlive()) {
-                            i.remove();
-                        }
-                    }
+                    monsters.removeIf(mon -> !mon.isAlive());
                     if(observableMonster == null && monsters.size() != 0) {
                         observableMonster = monsters.get(0);
                         observableMonster.addObserver(monsterCoordListener);
@@ -164,15 +157,14 @@ public class NSMap extends JPanel
     {
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
-        ArrayList<Pair<Integer, Integer>> foodCoords = foodGenerator.getFoodCoords();
+        RTree<Nothing, Point> foodCoords = foodGenerator.getFoodCoords();
 
-        for(int i = 0; i < foodCoords.size(); i++)
-            drawTarget(g2d, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
+        foodCoords.entries().map(Entry::geometry).forEach(e ->
+                drawTarget(g2d, (int)e.x(), (int)e.y()));
 
-        for(int i = 0; i < monsters.size(); i++)
-        {
-            if(monsters.get(i) != observableMonster)
-                drawMonster(g2d, monsters.get(i).getCoords().getFirst(), monsters.get(i).getCoords().getSecond(), monsters.get(i).getDirection(), monsters.get(i).getColor());
+        for (Monster monster : monsters) {
+            if (monster != observableMonster)
+                drawMonster(g2d, monster.getCoords().getFirst(), monster.getCoords().getSecond(), monster.getDirection(), monster.getColor());
         }
 
         if(observableMonster != null)
@@ -225,7 +217,7 @@ public class NSMap extends JPanel
     }
 
 
-    public Pair<Integer, Integer> getTarget(int x, int y, double distance)
+    public Point getTarget(int x, int y, double distance)
     {
         return foodGenerator.getTarget(x, y, distance);
     }

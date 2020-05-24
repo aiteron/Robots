@@ -1,5 +1,8 @@
 package NatSelection;
 
+import com.github.davidmoten.rtree.geometry.Point;
+import com.github.davidmoten.rtree.geometry.internal.PointDouble;
+
 import java.awt.*;
 import java.util.Observable;
 
@@ -9,7 +12,7 @@ public class Monster extends Observable {
     private final double ROTATESPEED = 0.01;
 
     private double x, y, direction, targetDirection, visionDistance = 60;
-    private Pair<Integer, Integer> targetCoords;
+    private Point targetCoords;
     private NSMap map;
     private int foodEaten = 0;
     private boolean isAlive = true, isAtHome = true, isGoingHome = false;
@@ -51,18 +54,18 @@ public class Monster extends Observable {
 
         if(targetCoords != null)
         {
-            targetDirection = Math.atan2(targetCoords.getSecond() - y, targetCoords.getFirst() - x);
+            targetDirection = Math.atan2(targetCoords.y() - y, targetCoords.x() - x);
 
-            if(distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < 10)
+            if(distance(x, y, targetCoords.x(), targetCoords.y()) < 10)
                 direction = targetDirection;
             else
                 rotateToTargetDirection(dt);
 
             // TODO может вынести то что выше в нижнюю часть?
 
-            if(distance(x, y, targetCoords.getFirst(), targetCoords.getSecond()) < SPEED*dt)
+            if(distance(x, y, targetCoords.x(), targetCoords.y()) < SPEED*dt)
             {
-                updateCoords(targetCoords.getFirst(), targetCoords.getSecond());
+                updateCoords(targetCoords.x(), targetCoords.y());
 
                 targetCoords = null;
                 targetDirection = -1;
@@ -147,7 +150,7 @@ public class Monster extends Observable {
 
     public Pair<Integer, Integer> getCoords()
     {
-        return new Pair<Integer, Integer>((int)(x), (int)(y));
+        return new Pair<>((int) (x), (int) (y));
     }
 
     public double getVisionDistance() {
@@ -186,7 +189,7 @@ public class Monster extends Observable {
             nY = h;
         }
 
-        targetCoords = new Pair<>((int)nX, (int)nY);
+        targetCoords = PointDouble.create(nX, nY);
     }
 
     public boolean isAtHome() {
@@ -205,7 +208,7 @@ public class Monster extends Observable {
         if(countObservers() != 0)
         {
             setChanged();
-            notifyObservers(new Event(EventType.Coords, new Pair<Integer, Integer>((int)x, (int)y)));
+            notifyObservers(new Event(EventType.Coords, new Pair<>((int) x, (int) y)));
         }
     }
 
@@ -214,7 +217,7 @@ public class Monster extends Observable {
         var foodCoords = map.getTarget((int)x, (int)y, Double.MAX_VALUE);
         double distance = 0;
         if(foodCoords != null)
-            distance = distance(x, y, foodCoords.getFirst(), foodCoords.getSecond());
+            distance = distance(x, y, foodCoords.x(), foodCoords.y());
 
         setChanged();
         notifyObservers(new Event(EventType.Distance, distance));

@@ -1,19 +1,22 @@
 package NatSelection;
 
-import java.util.ArrayList;
+import com.github.davidmoten.rtree.Entry;
+import com.github.davidmoten.rtree.RTree;
+import com.github.davidmoten.rtree.geometry.Point;
+import com.github.davidmoten.rtree.geometry.internal.PointDouble;
 
 public class FoodGenerator implements Runnable {
     private volatile boolean isActive = false;
     private double food_expRatePoisson = 0;
-    private final ArrayList<Pair<Integer, Integer>> foodCoords = new ArrayList<>();
+    private final String foodLock = "";
+    private RTree<Nothing, Point> foodCoords = RTree.create();
     NSMap map;
 
     private Thread foodThread;
 
     public FoodGenerator(NSMap map) {
         this.map = map;
-
-        foodThread  = new Thread(this);
+        foodThread = new Thread(this);
         foodThread.start();
     }
 
@@ -30,70 +33,40 @@ public class FoodGenerator implements Runnable {
     private void createFood()
     {
         int num = PoissonKnuth();
-        Pair<Integer, Integer>[] coords = new Pair[num];
+        PointDouble[] coords = new PointDouble[num];
         for (int i = 0; i < num; i++) {
             int x = (int) (Math.random() * (map.getWidth()));
             int y = (int) (Math.random() * (map.getHeight()));
-            coords[i] = new Pair<>(x, y);
+            coords[i] = PointDouble.create(x, y);
         }
 
-        synchronized (foodCoords) {
-            for (int i = 0; i < num; i++) {
-                foodCoords.add(new Pair<Integer, Integer>(coords[i].getFirst(), coords[i].getSecond()));
-            }
+        for (int i = 0; i < num; i++) {
+            foodCoords = foodCoords.add(Nothing.getInstance(), coords[i]);
         }
     }
 
-    private static double distance(double x1, double y1, double x2, double y2)
-    {
-        double diffX = x1 - x2;
-        double diffY = y1 - y2;
-        return Math.sqrt(diffX * diffX + diffY * diffY);
-    }
-
-    public Pair<Integer, Integer> getTarget(int x, int y, double distance) {        // TODO оптимизация - поиск по секторам
-        double minDist = distance, dist;
-        int foodNum = -1;
-
-        synchronized (foodCoords)
-        {
-            for(int i = 0; i < foodCoords.size(); i++)
-            {
-                dist = distance(x, y, foodCoords.get(i).getFirst(), foodCoords.get(i).getSecond());
-
-                if(dist < minDist)
-                {
-                    minDist = dist;
-                    foodNum = i;
-                }
-            }
-
-            if(foodNum != -1)
-                return new Pair<>(foodCoords.get(foodNum).getFirst(), foodCoords.get(foodNum).getSecond());
-            else
-                return null;
-        }
+    public Point getTarget(int x, int y, double distance) {
+        Entry<Nothing, Point> target;
+        target = foodCoords.nearest(PointDouble.create(x, y), Double.MAX_VALUE, 1)
+                .toBlocking()
+                .singleOrDefault(null);
+        if (target != null)
+            return target.geometry();
+        else
+            return null;
     }
 
     public boolean removeFood(double x, double y) {
-        synchronized (foodCoords) {
-            for (int i = 0; i < foodCoords.size(); i++) {
-                if (foodCoords.get(i).getFirst() == x && foodCoords.get(i).getSecond() == y) {
-                    foodCoords.remove(i);
-                    return true;
-                }
-            }
+        var point = PointDouble.create(x, y);
+        if (foodCoords.search(point).isEmpty().toBlocking().single())
             return false;
-        }
+        foodCoords = foodCoords.delete(Nothing.getInstance(), point);
+        return true;
     }
 
-    public ArrayList<Pair<Integer, Integer>> getFoodCoords()
+    public RTree<Nothing, Point> getFoodCoords()
     {
-        synchronized (foodCoords) {
-            ArrayList<Pair<Integer, Integer>> clone = new ArrayList<Pair<Integer, Integer>>(foodCoords.size());
-            for (Pair<Integer, Integer> item : foodCoords) clone.add(new Pair<>(item.getFirst(), item.getSecond()));
-            return clone;
-        }
+        return foodCoords;
     }
 
     public void setFoodCoeff(double foodCountInSecond)
@@ -103,7 +76,7 @@ public class FoodGenerator implements Runnable {
 
     public void restart()
     {
-        foodCoords.clear();
+        foodCoords = RTree.create();
         isActive = true;
     }
 
