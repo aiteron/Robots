@@ -47,7 +47,7 @@ public class FoodGenerator implements Runnable {
 
     public Point getTarget(int x, int y, double distance) {
         Entry<Nothing, Point> target;
-        target = foodCoords.nearest(PointDouble.create(x, y), Double.MAX_VALUE, 1)
+        target = foodCoords.nearest(PointDouble.create(x, y), map.maxDist, 1)
                 .toBlocking()
                 .singleOrDefault(null);
         if (target != null)

@@ -7,6 +7,8 @@ import com.github.davidmoten.rtree.geometry.Point;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Observer;
@@ -23,6 +25,7 @@ public class NSMap extends JPanel
     private Observer monsterDistanceListener;
     private Monster observableMonster;
     private final FoodGenerator foodGenerator;
+    public double maxDist = 0;
 
     private NSWindow window;
 
@@ -34,6 +37,14 @@ public class NSMap extends JPanel
     public NSMap(NSWindow window)
     {
         this.window = window;
+
+        window.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                maxDist = getMaxDist();
+            }
+        });
 
         timer.schedule(new TimerTask()
         {
@@ -55,6 +66,13 @@ public class NSMap extends JPanel
         foodGenerator = new FoodGenerator(this);
 
         setDoubleBuffered(true);
+    }
+
+    private double getMaxDist() {
+        var size = window.getSize();
+        var h = size.height;
+        var w = size.width;
+        return Math.sqrt(h * h + w * w);
     }
 
     private void createMonsters(int num)
