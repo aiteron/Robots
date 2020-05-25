@@ -4,6 +4,9 @@ import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Point;
 import com.github.davidmoten.rtree.geometry.internal.PointDouble;
+import com.github.davidmoten.rtree.internal.EntryDefault;
+
+import java.util.ArrayList;
 
 public class FoodGenerator implements Runnable {
     private volatile boolean isActive = false;
@@ -33,16 +36,15 @@ public class FoodGenerator implements Runnable {
     private void createFood()
     {
         int num = PoissonKnuth();
-        PointDouble[] coords = new PointDouble[num];
+        ArrayList<Entry<Nothing, Point>> entries = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             int x = (int) (Math.random() * (map.getWidth()));
             int y = (int) (Math.random() * (map.getHeight()));
-            coords[i] = PointDouble.create(x, y);
+            var entry = new EntryDefault<Nothing, Point>(Nothing.getInstance(), PointDouble.create(x, y));
+            entries.add(entry);
         }
 
-        for (int i = 0; i < num; i++) {
-            foodCoords = foodCoords.add(Nothing.getInstance(), coords[i]);
-        }
+        foodCoords = foodCoords.add(entries);
     }
 
     public Point getTarget(int x, int y, double distance) {
