@@ -1,18 +1,12 @@
 package NatSelection;
 
 import gui.Config;
-import gui.MainApplicationFrame;
-
-import java.awt.BorderLayout;
-import java.util.Observer;
-import java.util.ResourceBundle;
-
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
+import java.awt.*;
+import java.util.Observer;
 
 public class NSWindow extends JInternalFrame
 {

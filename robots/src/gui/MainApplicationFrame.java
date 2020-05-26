@@ -33,7 +33,7 @@ public class MainApplicationFrame extends JFrame
 
         // Game windows
         NSWindow gameWindow = new NSWindow(config);
-        gameWindow.setSize(400,  400);
+        gameWindow.setSize(800,  600);
         addWindow(gameWindow);
 
         ControlWindow controlWindow = new ControlWindow(config, gameWindow);
