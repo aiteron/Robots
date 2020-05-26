@@ -10,17 +10,17 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
-import java.util.Observer;
+import java.util.*;
+import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NSMap extends JPanel
 {
     private final int ITER_DURATION = 5000;
 
     private final Timer timer = new Timer("events generator", true);
-    private ArrayList<Monster> monsters = new ArrayList<>();
+    private List<Monster> monsters = new CopyOnWriteArrayList<Monster>();
     private Observer monsterCoordListener;
     private Observer monsterDistanceListener;
     private Monster observableMonster;
@@ -53,7 +53,7 @@ public class NSMap extends JPanel
             {
                 onRedrawEvent();
             }
-        }, 0, 50);
+        }, 0, 17);
         timer.schedule(new TimerTask()
         {
             @Override
@@ -61,7 +61,7 @@ public class NSMap extends JPanel
             {
                 onModelUpdateEvent();
             }
-        }, 0, 10);
+        }, 0, 11);
 
         foodGenerator = new FoodGenerator(this);
 
