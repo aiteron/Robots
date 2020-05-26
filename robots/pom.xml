@@ -51,8 +51,8 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>RobotsG.RobotsProgram</mainClass>
+                            <classpathPrefix></classpathPrefix>
+                            <mainClass>gui.RobotsProgram</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

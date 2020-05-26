@@ -180,8 +180,7 @@ public class NSMap extends JPanel
         foodCoords.entries().map(Entry::geometry).forEach(e ->
                 drawTarget(g2d, (int)e.x(), (int)e.y()));
 
-        for (int i = 0; i < monsters.size(); i++) {
-            Monster monster = monsters.get(i);
+        for (Monster monster : monsters) {
             if (monster != observableMonster)
                 drawMonster(g2d, monster.getCoords().getFirst(), monster.getCoords().getSecond(), monster.getDirection(), monster.getColor());
         }

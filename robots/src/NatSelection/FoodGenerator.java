@@ -60,9 +60,10 @@ public class FoodGenerator implements Runnable {
 
     public boolean removeFood(double x, double y) {
         var point = PointDouble.create(x, y);
-        if (foodCoords.search(point).isEmpty().toBlocking().single())
+        var found = foodCoords.search(point).toBlocking().singleOrDefault(null);
+        if (found == null)
             return false;
-        foodCoords = foodCoords.delete(Nothing.getInstance(), point);
+        foodCoords = foodCoords.delete(found);
         return true;
     }
 
