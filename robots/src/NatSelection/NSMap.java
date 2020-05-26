@@ -53,7 +53,7 @@ public class NSMap extends JPanel
             {
                 onRedrawEvent();
             }
-        }, 0, 50);
+        }, 0, 17);
         timer.schedule(new TimerTask()
         {
             @Override
@@ -61,7 +61,7 @@ public class NSMap extends JPanel
             {
                 onModelUpdateEvent();
             }
-        }, 0, 10);
+        }, 0, 11);
 
         foodGenerator = new FoodGenerator(this);
 
@@ -180,7 +180,7 @@ public class NSMap extends JPanel
         foodCoords.entries().map(Entry::geometry).forEach(e ->
                 drawTarget(g2d, (int)e.x(), (int)e.y()));
 
-        for (int i = 0, monstersSize = monsters.size(); i < monstersSize; i++) {
+        for (int i = 0; i < monsters.size(); i++) {
             Monster monster = monsters.get(i);
             if (monster != observableMonster)
                 drawMonster(g2d, monster.getCoords().getFirst(), monster.getCoords().getSecond(), monster.getDirection(), monster.getColor());
