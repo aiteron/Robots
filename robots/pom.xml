@@ -88,26 +88,26 @@
                 </executions>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.codehaus.mojo</groupId>-->
-<!--                <artifactId>exec-maven-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>exec</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <configuration>-->
-<!--                    <executable>java</executable>-->
-<!--                    <arguments>-->
-<!--                        <argument>-classpath</argument>-->
-<!--                        <classpath />-->
-<!--                        <argument>gui.RobotsProgram</argument>-->
-<!--                    </arguments>-->
-<!--                    <workingDirectory>target/classes</workingDirectory>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath />
+                        <argument>gui.RobotsProgram</argument>
+                    </arguments>
+                    <workingDirectory>target</workingDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
