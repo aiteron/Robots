@@ -2,9 +2,7 @@ package gui;
 
 import javax.swing.*;
 import java.beans.PropertyVetoException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
